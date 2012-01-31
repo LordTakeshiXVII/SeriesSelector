@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="SourcePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\abo\Desktop\source</Value>
+      <Value Profile="(Default)">E:\My Files\Dokumente\DreamloadDownloads</Value>
     </Setting>
     <Setting Name="DestinationPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\abo\Desktop\destination</Value>
+      <Value Profile="(Default)">L:\External Videos\Serien</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
+using SeriesSelector.Dashboard;
 using SeriesSelector.Frame;
+using SeriesSelector.ViewModels;
 
 namespace SeriesSelector.Windows
 {
@@ -11,11 +13,15 @@ namespace SeriesSelector.Windows
     [Export(typeof(Window))]
     public partial class MainWindow : System.Windows.Window
     {
+        private readonly DashBoardViewModel _currentViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
             Open = new AdHocCommand(ExecuteOpen);
-            DataContext = this;
+            _currentViewModel =(DashBoardViewModel) BootStrapper.Resolve<object>("DashBoard");
+            _currentViewModel.CurrentViewModel = _currentViewModel;
+            DataContext = _currentViewModel;
         }
 
         public ICommand Open { get; private set; }
@@ -31,5 +37,7 @@ namespace SeriesSelector.Windows
         {
             this.WindowState = WindowState.Maximized;
         }
+
+        
     }
 }

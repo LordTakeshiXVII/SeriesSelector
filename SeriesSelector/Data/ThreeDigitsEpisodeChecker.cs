@@ -9,7 +9,9 @@ namespace SeriesSelector.Data
     {
         public Tuple<string, string> CheckSeasonEpisode(string fileName)
         {
-            var result = Regex.Match(fileName, @"\d\d\d");
+            Match result = Regex.Match(fileName, @"\d\d\d");
+            if (result == Match.Empty)
+                return null;
             return result.ToString() == "720"
                        ? null
                        : new Tuple<string, string>(string.Format("S0{0}", result.ToString().Substring(0, 1)),
