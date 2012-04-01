@@ -1,0 +1,31 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <LinearGradientBrush x:Key="BG" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0" EndPoint="0.5,1">
+        <LinearGradientBrush.RelativeTransform>
+            <TransformGroup>
+                <ScaleTransform CenterX="0.5" CenterY="0.5" />
+                <SkewTransform CenterX="0.5" CenterY="0.5" />
+                <RotateTransform Angle="-59" CenterX="0.5" CenterY="0.5" />
+                <TranslateTransform />
+            </TransformGroup>
+        </LinearGradientBrush.RelativeTransform>
+        <GradientStop Offset="0.397" Color="#FFEEF0FF" />
+        <GradientStop Offset="0.759" Color="White" />
+        <GradientStop Offset="1" Color="#FFE7EBFF" />
+        <GradientStop Color="White" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MainBG" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0" EndPoint="0.5,1">
+        <LinearGradientBrush.RelativeTransform>
+            <TransformGroup>
+                <ScaleTransform CenterX="0.5" CenterY="0.5" />
+                <SkewTransform CenterX="0.5" CenterY="0.5" />
+                <RotateTransform Angle="-59" CenterX="0.5" CenterY="0.5" />
+                <TranslateTransform />
+            </TransformGroup>
+        </LinearGradientBrush.RelativeTransform>
+        <GradientStop Offset="0.397" Color="#FFFDFFEC" />
+        <GradientStop Offset="0.759" Color="#FFFCFFC5" />
+        <GradientStop Offset="1" Color="#FFF6F9BE" />
+        <GradientStop Color="#FFF7FBD5" />
+    </LinearGradientBrush>
+</ResourceDictionary>

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Dashboard="clr-namespace:SeriesSelector.Dashboard"
         xmlns:SeriesManagement="clr-namespace:SeriesSelector.SeriesManagement"
+        xmlns:UserControls="clr-namespace:SeriesSelector.UserControls"
         xmlns:ViewModels="clr-namespace:SeriesSelector.ViewModels"
         Title="Series Selector"
         Width="700"
@@ -10,7 +11,7 @@
         Loaded="WindowLoaded">
     <Window.Resources>
         <ResourceDictionary>
-            <DataTemplate DataType="{x:Type SeriesManagement:SeriesViewModel}">
+            <DataTemplate DataType="{x:Type ViewModels:SeriesViewModel}">
                 <SeriesManagement:SeriesView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type ViewModels:DashBoardViewModel}">
@@ -20,16 +21,11 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="9*" />
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0">
-            <MenuItem Header="Mode">
-                <MenuItem Command="{Binding Open}"
-                          CommandParameter="SeriesViewModel"
-                          Header="Series" />
-            </MenuItem>
-        </Menu>
+        <UserControls:DashBoardHeader Grid.Row="0" />
+
         <ContentControl x:Name="mainForm"
                         Grid.Row="1"
                         Content="{Binding CurrentViewModel}" />

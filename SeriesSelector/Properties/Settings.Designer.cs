@@ -37,7 +37,7 @@ namespace SeriesSelector.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("L:\\External Videos\\Serien")]
+        [global::System.Configuration.DefaultSettingValueAttribute("E:\\My Files\\Videos")]
         public string DestinationPath {
             get {
                 return ((string)(this["DestinationPath"]));

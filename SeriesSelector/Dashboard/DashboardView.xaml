@@ -6,23 +6,33 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../Styles/MainResources.xaml" />
+    </UserControl.Resources>
     <Grid>
         <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
-            <Button Width="200"
-                    Height="200"
-                    HorizontalContentAlignment="Left"
-                    VerticalContentAlignment="Top"
-                    Command="{Binding OpenSeries}"
-                    CommandParameter="Series">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Unmoved Files" />
-                    <TextBlock Grid.Column="1" Text="{Binding UnmovedFiles}" />
-                </Grid>
-            </Button>
+            <Border Width="200"
+                    Height="300"
+                    Margin="20"
+                    Background="{StaticResource BG}"
+                    CornerRadius="6">
+                <Button HorizontalContentAlignment="Left"
+                        VerticalContentAlignment="Top"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding OpenSeries}"
+                        CommandParameter="Series">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Unmoved Files" />
+                        <TextBlock Grid.Column="1" Text="{Binding UnmovedFiles}" />
+                    </Grid>
+                </Button>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,15 +1,18 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using FolderPickerLib;
 using SeriesSelector.Data;
 using SeriesSelector.Frame;
 using SeriesSelector.Properties;
 
-namespace SeriesSelector.SeriesManagement
+namespace SeriesSelector.ViewModels
 {
     [Export("Series", typeof(object))]
     public class SeriesViewModel : INotifyPropertyChanged
@@ -24,7 +27,7 @@ namespace SeriesSelector.SeriesManagement
             _sourcePath = Settings.Default.SourcePath;
             _destinationPath = Settings.Default.DestinationPath;
             _fileList = new ObservableCollection<EpisodeType>();
-            _newFileList = new ObservableCollection<EpisodeType>();
+            //_newFileList = new ObservableCollection<EpisodeType>();
             _currentMappings = new Dictionary<string, string>();
             SelectFolder = new AdHocCommand(ExecuteSelectFolder);
             SelectDestinationFolder = new AdHocCommand(ExecuteSelectDestinationFolder);
@@ -32,6 +35,9 @@ namespace SeriesSelector.SeriesManagement
             RemoveMapping = new AdHocCommand(ExecuteRemoveMapping);
             MoveAllFiles = new AdHocCommand(ExecuteMoveAllFiles);
             MoveSelectedFile = new AdHocCommand(ExecuteMoveSelectedFile);
+            PlayThumbnail = new AdHocCommand(ExecutePlayThumbnail);
+            SelectAll = new AdHocCommand(ExecuteSelectAll);
+            UnselectAll = new AdHocCommand(ExecuteUnselectAll);
             _episodeService = BootStrapper.Resolve<IEpisdoeService>();
             FileTypes = new ObservableCollection<FileTypeValue>
                              {
@@ -39,6 +45,7 @@ namespace SeriesSelector.SeriesManagement
                                  new FileTypeValue("*.mkv")
                              };
             _selectedFileType = new FileTypeValue("*avi");
+            
         }
 
         private FileTypeValue _selectedFileType;
@@ -142,11 +149,35 @@ namespace SeriesSelector.SeriesManagement
             PropertyChanged(this, new PropertyChangedEventArgs("DestinationPath"));
         }
 
+        public ICommand SelectAll { get; set; }
+        private void ExecuteSelectAll(object obj)
+        {
+            foreach (EpisodeType episode in NewFileList)
+            {
+                episode.IsSelected = true;
+            }
+        }
+
+        public ICommand UnselectAll { get; set; }
+        private void ExecuteUnselectAll(object obj)
+        {
+            foreach (EpisodeType episode in NewFileList)
+            {
+                episode.IsSelected = false;
+            }
+        }
+
         public ICommand MoveAllFiles { get; set; }
         private void ExecuteMoveAllFiles(object obj)
         {
-            foreach (var episodeType in _newFileList)
+            if (NewFileList == null)
+                return;
+
+            foreach (EpisodeType episodeType in NewFileList)
             {
+                if (!episodeType.IsSelected)
+                    continue;
+
                 var oldPath = episodeType.FullPath;
                 var newPath = Path.Combine(_destinationPath, episodeType.SeriesName, episodeType.Season.ToUpper());
 
@@ -164,6 +195,7 @@ namespace SeriesSelector.SeriesManagement
                     File.Move(oldPath, newPath);
                 }
             }
+
             PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
             PropertyChanged(this, new PropertyChangedEventArgs("FileList"));
             PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
@@ -195,36 +227,51 @@ namespace SeriesSelector.SeriesManagement
             PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
         }
 
-        private readonly ObservableCollection<EpisodeType> _newFileList;
-
-        public ObservableCollection<EpisodeType> NewFileList
+        private CollectionView _newFileList;
+        public CollectionView NewFileList
         {
-            get
+            get { return new CollectionView(_newFileList); }
+            set { _newFileList = value; }
+        }
+
+        private void GetNewFileList()
+        {
+            var list = new List<EpisodeType>();
+            //_newFileList.Clear();
+
+            _currentMappings = _episodeService.GetMappingValues();
+
+            foreach (var episodeType in _fileList)
             {
-                _newFileList.Clear();
-                _currentMappings = _episodeService.GetMappingValues();
-
-                foreach (var episodeType in _fileList)
+                string newName = null;
+                var oldName = episodeType.FileName;
+                var matcher = BootStrapper.ResolveAll<ISeriesMatcher>();
+                foreach (var seriesMatcher in matcher)
                 {
-                    string newName = null;
-                    var oldName = episodeType.FileName;
-                    var matcher = BootStrapper.ResolveAll<ISeriesMatcher>();
-                    foreach (var seriesMatcher in matcher)
-                    {
-                        newName = seriesMatcher.Match(_currentMappings, oldName);
-                        if (!string.IsNullOrEmpty(newName)) break;
-                    }
-
-                    episodeType.SeriesName = newName;
-
-                    episodeType.NewName = newName + " " + episodeType.Season.ToUpper() +
-                                          episodeType.Episode.ToUpper();
-                    episodeType.FileType = Path.GetExtension(episodeType.FileName);
-
-                    _newFileList.Add(episodeType);
+                    newName = seriesMatcher.Match(_currentMappings, oldName);
+                    if (!string.IsNullOrEmpty(newName)) break;
                 }
-                return _newFileList;
+
+                episodeType.SeriesName = newName;
+
+                episodeType.NewName = newName + " " + episodeType.Season.ToUpper() +
+                                      episodeType.Episode.ToUpper();
+                episodeType.FileType = Path.GetExtension(episodeType.FileName);
+
+                episodeType.IsSelected = true;
+
+                //_newFileList.Add(episodeType);
+                list.Add(episodeType);
             }
+
+            _newFileList = new CollectionView(list);
+        }
+
+        public ICommand PlayThumbnail { get; set; }
+        private void ExecutePlayThumbnail(object obj)
+        {
+            var mediaElement = (MediaElement)obj;
+            mediaElement.Play();
         }
 
         private readonly ObservableCollection<EpisodeType> _fileList;
@@ -239,6 +286,7 @@ namespace SeriesSelector.SeriesManagement
                 {
                     _fileList.Add(episodeType);
                 }
+                GetNewFileList();
                 return _fileList;
             }
 

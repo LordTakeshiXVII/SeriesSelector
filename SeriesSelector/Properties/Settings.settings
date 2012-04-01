@@ -6,7 +6,7 @@
       <Value Profile="(Default)">E:\My Files\Dokumente\DreamloadDownloads</Value>
     </Setting>
     <Setting Name="DestinationPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">L:\External Videos\Serien</Value>
+      <Value Profile="(Default)">E:\My Files\Videos</Value>
     </Setting>
   </Settings>
 </SettingsFile>
