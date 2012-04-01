@@ -6,8 +6,6 @@
         xmlns:UserControls="clr-namespace:SeriesSelector.UserControls"
         xmlns:ViewModels="clr-namespace:SeriesSelector.ViewModels"
         Title="Series Selector"
-        Width="700"
-        Height="700"
         Loaded="WindowLoaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -21,13 +19,11 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="9*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <UserControls:DashBoardHeader Grid.Row="0" />
+        <UserControls:DashBoardContent x:Name="mainForm" Grid.Row="1" />
 
-        <ContentControl x:Name="mainForm"
-                        Grid.Row="1"
-                        Content="{Binding CurrentViewModel}" />
     </Grid>
 </Window>

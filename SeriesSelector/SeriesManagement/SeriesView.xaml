@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:wpfspark="clr-namespace:WPFSpark;assembly=WPFSpark"
              x:Name="SeriesUserControl"
+             Height="auto"
              d:DesignHeight="600"
              d:DesignWidth="1200"
              mc:Ignorable="d">
@@ -12,65 +13,140 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <StackPanel>
-            <Button Height="40"
-                    Margin="4"
+            <Button Margin="4"
                     Background="Transparent"
                     BorderBrush="Transparent"
                     BorderThickness="0"
                     Command="{Binding SelectAll}">
-                <Image Source="../Images/select.png" />
+                <Button.ToolTip>
+                    <ToolTip Content="Select all episodes" />
+                </Button.ToolTip>
+                <Image Source="../Images/check.png" />
             </Button>
 
-            <Button Height="40"
-                    Margin="4"
+            <Button Margin="4"
                     Background="Transparent"
                     BorderBrush="Transparent"
                     BorderThickness="0"
                     Command="{Binding UnselectAll}">
-                <Image Source="../Images/unselect.png" />
+                <Button.ToolTip>
+                    <ToolTip Content="Unselect all episodes" />
+                </Button.ToolTip>
+                <Image Source="../Images/uncheck.png" />
+            </Button>
+
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding MoveAllFiles}">
+                <Button.ToolTip>
+                    <ToolTip Content="Move selected episodes" />
+                </Button.ToolTip>
+                <Image Source="../Images/Save.png" />
             </Button>
         </StackPanel>
-        <ListView Grid.RowSpan="5"
+        <ListView x:Name="NewFileListView"
                   Grid.Column="1"
                   Margin="4"
-                  BorderBrush="Transparent"
+                  BorderBrush="Black"
                   BorderThickness="0"
                   ItemsSource="{Binding NewFileList,
                                         Mode=TwoWay,
                                         UpdateSourceTrigger=PropertyChanged}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                   SelectedItem="{Binding SelectedFile,
-                                         Mode=TwoWay}">
+                                         Mode=TwoWay}"
+                  SourceUpdated="NewFileListView_SourceUpdated">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="150" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label Content="Name:" />
+                                    <TextBox Name="NameBox"
+                                             Grid.Column="1"
+                                             MaxWidth="200"
+                                             Text="{Binding FileName}" />
+                                    <Label Grid.Row="1" Content="Season:" />
+                                    <TextBox Name="SeasonBox"
+                                             Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Season}" />
+                                    <Label Grid.Row="2" Content="Episode:" />
+                                    <TextBox Name="EpisodeBox"
+                                             Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding Episode}" />
+                                    <Label Grid.Row="3" Content="ReleaseGroup:" />
+                                    <TextBox Name="ReleaseGroupBox"
+                                             Grid.Row="3"
+                                             Grid.Column="1"
+                                             Text="{Binding ReleaseGroup}" />
+                                    <Label Grid.Row="4" Content="File Size:" />
+                                    <TextBox Name="FileSizeBox"
+                                             Grid.Row="4"
+                                             Grid.Column="1"
+                                             Text="{Binding FileSize}" />
+                                    <Label Grid.Row="5" Content="File Type:" />
+                                    <TextBox Name="FileTypeBox"
+                                             Grid.Row="5"
+                                             Grid.Column="1"
+                                             Text="{Binding FileType}" />
+                                </Grid>
+                            </ToolTip>
+                        </Grid.ToolTip>
                         <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Image Grid.Column="1" Source="../Images/VideoThumb.png" />
+                        <Image Grid.Column="1"
+                               Width="150"
+                               Source="../Images/VideoThumb.png" />
 
-                        <TextBlock Grid.Row="1"
+
+                        <TextBlock Grid.Row="0"
                                    Grid.Column="1"
-                                   Text="{Binding NewName}" />
+                                   VerticalAlignment="Center"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="{Binding NewName}"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWithOverflow">
+                            <TextBlock.Effect>
+                                <DropShadowEffect />
+
+                            </TextBlock.Effect>
+                        </TextBlock>
 
                     </Grid>
                 </DataTemplate>
@@ -78,141 +154,106 @@
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <wpfspark:FluidWrapPanel Margin="20"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch"
-                                             Background="Transparent"
-                                             ClipToBounds="True"
-                                             DragOpacity="0.75"
-                                             DragScale="1.9"
-                                             IsComposing="True"
-                                             ItemHeight="200"
-                                             ItemWidth="170"
-                                             Orientation="Horizontal">
+                    <WrapPanel />
+
+
+                    <!--
+                        <wpfspark:FluidWrapPanel Margin="20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        ClipToBounds="True"
+                        DragOpacity="0.75"
+                        DragScale="1.9"
+                        IsComposing="True"
+                        ItemHeight="200"
+                        ItemWidth="170"
+                        Orientation="Horizontal">
                         <wpfspark:FluidWrapPanel.ElementEasing>
-                            <BackEase Amplitude="0.35" EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.35" EasingMode="EaseOut" />
                         </wpfspark:FluidWrapPanel.ElementEasing>
                         <wpfspark:FluidWrapPanel.DragEasing>
-                            <BackEase Amplitude="0.65" EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.65" EasingMode="EaseOut" />
                         </wpfspark:FluidWrapPanel.DragEasing>
-                    </wpfspark:FluidWrapPanel>
+                        </wpfspark:FluidWrapPanel>
+                    -->
+
+
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListView>
 
-        <Button Grid.Column="2"
-                Height="60"
-                Background="Transparent"
-                BorderBrush="Transparent"
-                BorderThickness="0"
-                Command="{Binding MoveAllFiles}">
-            <Image Source="../Images/save.png" />
-        </Button>
 
-        <Expander Grid.RowSpan="3"
-                  Grid.Column="3"
-                  Margin="8"
-                  ExpandDirection="Left">
-            <Expander.Header>
-                <TextBlock Width="Auto"
-                           Margin="0,0,0,0"
-                           RenderTransformOrigin="0.5,0.5"
-                           Text="Details">
-                    <TextBlock.LayoutTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1" ScaleY="1" />
-                            <SkewTransform AngleX="0" AngleY="0" />
-                            <RotateTransform Angle="90" />
-                            <TranslateTransform X="0" Y="0" />
-                        </TransformGroup>
-                    </TextBlock.LayoutTransform>
-                    <TextBlock.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1" ScaleY="1" />
-                            <SkewTransform AngleX="0" AngleY="0" />
-                            <RotateTransform Angle="0" />
-                            <TranslateTransform X="0" Y="0" />
-                        </TransformGroup>
-                    </TextBlock.RenderTransform>
-                </TextBlock>
-            </Expander.Header>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
 
+                    <Label HorizontalContentAlignment="Right" Content="Name:" />
+                    <TextBox Name="NameBox"
+                             Grid.Column="1"
+                             Text="{Binding Name}" />
+                    <Label Grid.Row="1"
+                           HorizontalContentAlignment="Right"
+                           Content="Season:" />
+                    <TextBox Name="SeasonBox"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Text="{Binding Season}" />
+                    <Label Grid.Row="2"
+                           HorizontalContentAlignment="Right"
+                           Content="Episode:" />
+                    <TextBox Name="EpisodeBox"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding Episode}" />
+                    <Label Grid.Row="3"
+                           HorizontalContentAlignment="Right"
+                           Content="ReleaseGroup:" />
+                    <TextBox Name="ReleaseGroupBox"
+                             Grid.Row="3"
+                             Grid.Column="1"
+                             Text="{Binding ReleaseGroup}" />
+                    <Label Grid.Row="4"
+                           HorizontalContentAlignment="Right"
+                           Content="File Size:" />
+                    <TextBox Name="FileSizeBox"
+                             Grid.Row="4"
+                             Grid.Column="1"
+                             Text="{Binding FileSize}" />
+                    <Label Grid.Row="5"
+                           HorizontalContentAlignment="Right"
+                           Content="File Type:" />
+                    <TextBox Name="FileTypeBox"
+                             Grid.Row="5"
+                             Grid.Column="1"
+                             Text="{Binding FileType}" />
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Column="1" Margin="4">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
-                <Label Content="Name:" />
-                <TextBox Name="NameBox"
-                         Grid.Column="1"
-                         MaxWidth="200"
-                         Text="{Binding Name}" />
-                <Label Grid.Row="1" Content="Season:" />
-                <TextBox Name="SeasonBox"
-                         Grid.Row="1"
-                         Grid.Column="1"
-                         Text="{Binding Season}" />
-                <Label Grid.Row="2" Content="Episode:" />
-                <TextBox Name="EpisodeBox"
-                         Grid.Row="2"
-                         Grid.Column="1"
-                         Text="{Binding Episode}" />
-                <Label Grid.Row="3" Content="ReleaseGroup:" />
-                <TextBox Name="ReleaseGroupBox"
-                         Grid.Row="3"
-                         Grid.Column="1"
-                         Text="{Binding ReleaseGroup}" />
-                <Label Grid.Row="4" Content="File Size:" />
-                <TextBox Name="FileSizeBox"
-                         Grid.Row="4"
-                         Grid.Column="1"
-                         Text="{Binding FileSize}" />
-                <Label Grid.Row="5" Content="File Type:" />
-                <TextBox Name="FileTypeBox"
-                         Grid.Row="5"
-                         Grid.Column="1"
-                         Text="{Binding FileType}" />
-            </Grid>
-        </Expander>
-
-        <Expander Grid.Row="3"
-                  Grid.Column="3"
-                  Margin="8"
-                  ExpandDirection="Left">
-            <Expander.Header>
-                <TextBlock Width="Auto"
-                           Margin="0,0,0,0"
-                           RenderTransformOrigin="0.5,0.5"
-                           Text="Mappings">
-                    <TextBlock.LayoutTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1" ScaleY="1" />
-                            <SkewTransform AngleX="0" AngleY="0" />
-                            <RotateTransform Angle="90" />
-                            <TranslateTransform X="0" Y="0" />
-                        </TransformGroup>
-                    </TextBlock.LayoutTransform>
-                    <TextBlock.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1" ScaleY="1" />
-                            <SkewTransform AngleX="0" AngleY="0" />
-                            <RotateTransform Angle="0" />
-                            <TranslateTransform X="0" Y="0" />
-                        </TransformGroup>
-                    </TextBlock.RenderTransform>
-                </TextBlock>
-            </Expander.Header>
-            <StackPanel>
                 <ListView ItemsSource="{Binding CurrentMappings}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -231,7 +272,7 @@
                                 <Image Grid.Column="1"
                                        Height="20"
                                        Margin="2"
-                                       Source="../Images/mapping.png" />
+                                       Source="../Images/Link.png" />
                                 <TextBlock Grid.Column="2"
                                            Margin="2"
                                            Text="{Binding Path=Value}">
@@ -243,29 +284,84 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <TextBox Text="{Binding NewName}" />
-                <Button Height="30"
+
+                <TextBox Grid.Row="1" Text="{Binding NewName}" />
+                <StackPanel Grid.Row="2"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+
+
+                    <Button Height="30"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding AddMapping}">
+                        <Image Source="../Images/Add.png" />
+                        <Button.ToolTip>
+                            <ToolTip Content="Add Mapping" />
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Height="30"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding RemoveMapping}">
+                        <Image Source="../Images/Delete.png" />
+                        <Button.ToolTip>
+                            <ToolTip Content="Remove Mapping" />
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0"
+                       HorizontalContentAlignment="Right"
+                       Content="Source Path:" />
+                <TextBox Name="SourcePathTextBox"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         Text="{Binding SourcePath}" />
+                <Button Grid.Row="0"
+                        Grid.Column="2"
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Command="{Binding AddMapping}">
-                    <Image Source="../Images/add.png" />
-                    <Button.ToolTip>
-                        <ToolTip Content="Add Mapping" />
-                    </Button.ToolTip>
+                        Command="{Binding SelectSourceFolder}">
+                    <Image Source="../Images/Folder.png" />
                 </Button>
-                <Button Height="30"
+
+                <Label Grid.Row="1"
+                       HorizontalContentAlignment="Right"
+                       Content="Destination Path:" />
+                <TextBox Name="DestinationPathTextBox"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding DestinationPath}" />
+                <Button Grid.Row="1"
+                        Grid.Column="2"
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Command="{Binding RemoveMapping}">
-                    <Image Source="../Images/delete.png" />
-                    <Button.ToolTip>
-                        <ToolTip Content="Remove Mapping" />
-                    </Button.ToolTip>
+                        Command="{Binding SelectDestinationFolder}">
+                    <Image Source="../Images/Folder.png" />
                 </Button>
-            </StackPanel>
-        </Expander>
+
+            </Grid>
+
+        </Grid>
+
     </Grid>
 
 

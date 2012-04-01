@@ -12,22 +12,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SeriesSelector.SeriesManagement
+namespace SeriesSelector.UserControls
 {
     /// <summary>
-    /// Interaction logic for SeriesView.xaml
+    /// Interaction logic for DashBoardContent.xaml
     /// </summary>
-    public partial class SeriesView : UserControl
+    public partial class DashBoardContent : UserControl
     {
-        public SeriesView()
+        public DashBoardContent()
         {
             InitializeComponent();
         }
-
-        private void NewFileListView_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-            NewFileListView.Items.Refresh();
-        }
-
     }
 }

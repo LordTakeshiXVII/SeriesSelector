@@ -125,6 +125,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\DashBoardContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DashBoardHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -138,6 +142,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Frame\BootStrapper.cs" />
+    <Compile Include="UserControls\DashBoardContent.xaml.cs">
+      <DependentUpon>DashBoardContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DashBoardHeader.xaml.cs">
       <DependentUpon>DashBoardHeader.xaml</DependentUpon>
     </Compile>
@@ -204,23 +211,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\home.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\unselect.png" />
     <Resource Include="Images\select.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\save.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\mapping.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\add.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\VideoThumb.png" />
@@ -230,6 +225,28 @@
       <Project>{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}</Project>
       <Name>WPFSpark</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Uncheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Add.png" />
+    <Resource Include="Images\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Link.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

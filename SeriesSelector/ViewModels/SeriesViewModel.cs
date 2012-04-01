@@ -18,33 +18,47 @@ namespace SeriesSelector.ViewModels
     public class SeriesViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-
-
+        
         public SeriesViewModel()
         {
-
             _sourcePath = Settings.Default.SourcePath;
             _destinationPath = Settings.Default.DestinationPath;
-            _fileList = new ObservableCollection<EpisodeType>();
-            //_newFileList = new ObservableCollection<EpisodeType>();
+
             _currentMappings = new Dictionary<string, string>();
-            SelectFolder = new AdHocCommand(ExecuteSelectFolder);
+
+            InitializeCommands();
+            InitializeServices();
+            
+            UpdateFileLists();
+        }
+
+        private void InitializeServices()
+        {
+            _episodeService = BootStrapper.Resolve<IEpisdoeService>();
+        }
+
+        private void InitializeCommands()
+        {
+            SelectSourceFolder = new AdHocCommand(ExecuteSelectSourceFolder);
             SelectDestinationFolder = new AdHocCommand(ExecuteSelectDestinationFolder);
             AddMapping = new AdHocCommand(ExecuteAddMapping);
             RemoveMapping = new AdHocCommand(ExecuteRemoveMapping);
             MoveAllFiles = new AdHocCommand(ExecuteMoveAllFiles);
-            MoveSelectedFile = new AdHocCommand(ExecuteMoveSelectedFile);
             PlayThumbnail = new AdHocCommand(ExecutePlayThumbnail);
             SelectAll = new AdHocCommand(ExecuteSelectAll);
             UnselectAll = new AdHocCommand(ExecuteUnselectAll);
-            _episodeService = BootStrapper.Resolve<IEpisdoeService>();
-            FileTypes = new ObservableCollection<FileTypeValue>
-                             {
-                                 new FileTypeValue("*.avi"),
-                                 new FileTypeValue("*.mkv")
-                             };
-            _selectedFileType = new FileTypeValue("*avi");
+        }
+
+        private void UpdateFileLists()
+        {
+            _fileList = new ObservableCollection<EpisodeType>(_episodeService.GetSourceEpisode(SourcePath));
+            _newFileList = new ObservableCollection<EpisodeType>(_episodeService.GetNewFileList(_fileList));
+
+            if(PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs("FileList"));
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs("NewFileList"));
+            }
             
         }
 
@@ -67,12 +81,12 @@ namespace SeriesSelector.ViewModels
             _currentMappings.Remove(_selectedMapping.Key);
             _episodeService.WriteMappingValue(_currentMappings);
             PropertyChanged(this, new PropertyChangedEventArgs("CurrentMappings"));
+            UpdateFileLists();
         }
 
         public ICommand RemoveMapping { get; set; }
 
         private KeyValuePair<string, string> _selectedMapping;
-
         public KeyValuePair<string, string> SelectedMapping
         {
             get { return _selectedMapping; }
@@ -87,10 +101,14 @@ namespace SeriesSelector.ViewModels
         private void ExecuteAddMapping(object obj)
         {
             _selectedFile = null;
-            CurrentMappings.Add(Name, NewName);
-            _episodeService.WriteMappingValue(_currentMappings);
+            if (!CurrentMappings.ContainsKey(Name))
+            {
+                CurrentMappings.Add(Name, NewName);
+                _episodeService.WriteMappingValue(_currentMappings);
+            }
             PropertyChanged(this, new PropertyChangedEventArgs("CurrentMappings"));
-            PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
+            UpdateFileLists();
+            
         }
 
         private string _newName;
@@ -101,7 +119,7 @@ namespace SeriesSelector.ViewModels
             set { _newName = value; }
         }
 
-        private readonly IEpisdoeService _episodeService;
+        private IEpisdoeService _episodeService;
 
         private Dictionary<string, string> _currentMappings;
 
@@ -127,16 +145,15 @@ namespace SeriesSelector.ViewModels
             set { _destinationPath = value; }
         }
 
-        public ICommand SelectFolder { get; private set; }
+        public ICommand SelectSourceFolder { get; private set; }
 
-        public void ExecuteSelectFolder(object obj)
+        public void ExecuteSelectSourceFolder(object obj)
         {
             var dlg = new FolderPickerDialog();
             if (dlg.ShowDialog() != true) return;
             _sourcePath = dlg.SelectedPath;
             PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
-            PropertyChanged(this, new PropertyChangedEventArgs("FileList"));
-            PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
+            UpdateFileLists();
         }
 
         public ICommand SelectDestinationFolder { get; set; }
@@ -170,102 +187,92 @@ namespace SeriesSelector.ViewModels
         public ICommand MoveAllFiles { get; set; }
         private void ExecuteMoveAllFiles(object obj)
         {
-            if (NewFileList == null)
-                return;
+            Mouse.OverrideCursor = Cursors.Wait;
 
-            foreach (EpisodeType episodeType in NewFileList)
-            {
-                if (!episodeType.IsSelected)
-                    continue;
+            var bg = new BackgroundWorker();
 
-                var oldPath = episodeType.FullPath;
-                var newPath = Path.Combine(_destinationPath, episodeType.SeriesName, episodeType.Season.ToUpper());
+            bg.DoWork += (sender, e) =>
+                             {
+                                 if (NewFileList == null)
+                                     return;
+
+                                 foreach (EpisodeType episodeType in NewFileList)
+                                 {
+                                     if (!episodeType.IsSelected)
+                                         continue;
+
+                                     if(episodeType.NewName == null)
+                                         continue;
+
+                                     var oldPath = episodeType.FullPath;
+                                     var newPath = Path.Combine(_destinationPath, episodeType.SeriesName,
+                                                                episodeType.Season.ToUpper());
 
 
-                if (Directory.Exists(newPath))
-                {
-                    newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                    if (!File.Exists(newPath))
-                        File.Move(oldPath, newPath);
-                }
-                else
-                {
-                    Directory.CreateDirectory(newPath);
-                    newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                    File.Move(oldPath, newPath);
-                }
-            }
+                                     if (Directory.Exists(newPath))
+                                     {
+                                         newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
+                                         if (!File.Exists(newPath))
+                                             File.Move(oldPath, newPath);
+                                     }
+                                     else
+                                     {
+                                         Directory.CreateDirectory(newPath);
+                                         newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
+                                         File.Move(oldPath, newPath);
+                                     }
+                                     UpdateFileLists();
+                                 }
+                             };
 
-            PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
-            PropertyChanged(this, new PropertyChangedEventArgs("FileList"));
-            PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
+            bg.RunWorkerCompleted += (sender, e) =>
+                                         {
+                                             PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
+                                             UpdateFileLists();
+                                             Mouse.OverrideCursor = null;
+                                         };
+
+            bg.RunWorkerAsync();
+
         }
 
-        public ICommand MoveSelectedFile { get; set; }
-        public void ExecuteMoveSelectedFile(object obj)
+        private ObservableCollection<EpisodeType> _newFileList;
+        public ObservableCollection<EpisodeType> NewFileList
         {
-            var episodeType = _selectedFile;
-            var oldPath = episodeType.FullPath;
-            var newPath = Path.Combine(_destinationPath, episodeType.SeriesName, episodeType.Season.ToUpper());
-
-
-            if (Directory.Exists(newPath))
-            {
-                newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                if (!File.Exists(newPath))
-                    File.Move(oldPath, newPath);
-            }
-            else
-            {
-                Directory.CreateDirectory(newPath);
-                newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                File.Move(oldPath, newPath);
-            }
-
-            PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
-            PropertyChanged(this, new PropertyChangedEventArgs("FileList"));
-            PropertyChanged(this, new PropertyChangedEventArgs("NewFileList"));
-        }
-
-        private CollectionView _newFileList;
-        public CollectionView NewFileList
-        {
-            get { return new CollectionView(_newFileList); }
+            get { return _newFileList; }
             set { _newFileList = value; }
         }
 
-        private void GetNewFileList()
-        {
-            var list = new List<EpisodeType>();
-            //_newFileList.Clear();
+        //private void GetNewFileList()
+        //{
+        //    var list = new List<EpisodeType>();
 
-            _currentMappings = _episodeService.GetMappingValues();
+        //    _currentMappings = _episodeService.GetMappingValues();
 
-            foreach (var episodeType in _fileList)
-            {
-                string newName = null;
-                var oldName = episodeType.FileName;
-                var matcher = BootStrapper.ResolveAll<ISeriesMatcher>();
-                foreach (var seriesMatcher in matcher)
-                {
-                    newName = seriesMatcher.Match(_currentMappings, oldName);
-                    if (!string.IsNullOrEmpty(newName)) break;
-                }
+        //    foreach (var episodeType in _fileList)
+        //    {
+        //        string newName = null;
+        //        var oldName = episodeType.FileName;
+        //        var matcher = BootStrapper.ResolveAll<ISeriesMatcher>();
+        //        foreach (var seriesMatcher in matcher)
+        //        {
+        //            newName = seriesMatcher.Match(_currentMappings, oldName);
+        //            if (!string.IsNullOrEmpty(newName)) break;
+        //        }
 
-                episodeType.SeriesName = newName;
+        //        episodeType.SeriesName = newName;
 
-                episodeType.NewName = newName + " " + episodeType.Season.ToUpper() +
-                                      episodeType.Episode.ToUpper();
-                episodeType.FileType = Path.GetExtension(episodeType.FileName);
+        //        episodeType.NewName = newName + " " + episodeType.Season.ToUpper() +
+        //                              episodeType.Episode.ToUpper();
+        //        episodeType.FileType = Path.GetExtension(episodeType.FileName);
 
-                episodeType.IsSelected = true;
+        //        episodeType.IsSelected = true;
 
-                //_newFileList.Add(episodeType);
-                list.Add(episodeType);
-            }
+        //        list.Add(episodeType);
+        //    }
 
-            _newFileList = new CollectionView(list);
-        }
+        //    _newFileList = new CollectionView(list);
+        //}
 
         public ICommand PlayThumbnail { get; set; }
         private void ExecutePlayThumbnail(object obj)
@@ -274,19 +281,11 @@ namespace SeriesSelector.ViewModels
             mediaElement.Play();
         }
 
-        private readonly ObservableCollection<EpisodeType> _fileList;
-        private IList<EpisodeType> _soureFileList;
+        private ObservableCollection<EpisodeType> _fileList;
         public ObservableCollection<EpisodeType> FileList
         {
             get
             {
-                _fileList.Clear();
-                _soureFileList = new List<EpisodeType>(_episodeService.GetSourceEpisode(_sourcePath, _selectedFileType.Type));
-                foreach (var episodeType in _soureFileList)
-                {
-                    _fileList.Add(episodeType);
-                }
-                GetNewFileList();
                 return _fileList;
             }
 

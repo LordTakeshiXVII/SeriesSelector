@@ -21,7 +21,7 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Command="{Binding NavigateToHome}">
-                    <Image Source="../Images/home.png" />
+                    <Image Source="../Images/Home.png" />
                 </Button>
             </Grid>
         </Border>

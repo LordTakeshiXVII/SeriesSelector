@@ -12,16 +12,28 @@ namespace SeriesSelector.Data
     [Export(typeof(IEpisdoeService))]
     public class EpisodeService : IEpisdoeService
     {
-        public IList<EpisodeType> GetSourceEpisode(string sourcePath, string fileType)
+        public IList<EpisodeType> GetSourceEpisode(string sourcePath)
         {
-            var di = Directory.GetFiles(sourcePath, "*.avi", SearchOption.AllDirectories);
-            var di2 = Directory.GetFiles(sourcePath, "*.mkv", SearchOption.AllDirectories);
-            var l = new ArrayList(di);
-            l.AddRange(di2);
+            var fileTypeValues = new List<FileTypeValue>
+                               {
+                                   new FileTypeValue("avi"),
+                                   new FileTypeValue("mkv"),
+                                   new FileTypeValue("mp4")
+                               };
 
-            IList<EpisodeType> episode = new List<EpisodeType>();
+            var fileList = new ArrayList();
 
-            foreach (string file in l)
+            foreach (var fileTypeValue in fileTypeValues)
+            {
+                var di = Directory.GetFiles(sourcePath, string.Format("*.{0}", fileTypeValue.Type),
+                                            SearchOption.AllDirectories);
+
+                fileList.AddRange(di);
+            }
+
+            IList<EpisodeType> episodeList = new List<EpisodeType>();
+
+            foreach (string file in fileList)
             {
                 var episodeType = new EpisodeType();
                 var fileName = Path.GetFileName(file);
@@ -56,9 +68,42 @@ namespace SeriesSelector.Data
                 episodeType.FullPath = file;
                 episodeType.FileSize = Math.Round((((double)new FileInfo(file).Length) / 1048576), 2).ToString();
 
-                episode.Add(episodeType);
+                episodeList.Add(episodeType);
             }
-            return episode;
+            return episodeList;
+        }
+
+        public IList<EpisodeType> GetNewFileList(IList<EpisodeType> sourceFiles)
+        {
+            var newList = new List<EpisodeType>();
+            var mappings = GetMappingValues();
+
+            foreach (var episodeType in sourceFiles)
+            {
+                string newName = null;
+                var oldName = episodeType.FileName;
+                var matcher = BootStrapper.ResolveAll<ISeriesMatcher>();
+                foreach (var seriesMatcher in matcher)
+                {
+                    newName = seriesMatcher.Match(mappings, oldName);
+                    if (!string.IsNullOrEmpty(newName)) break;
+                }
+                
+                if(newName != null)
+                {
+                    episodeType.SeriesName = newName;
+                    episodeType.NewName = newName + " " + episodeType.Season.ToUpper() +
+                                      episodeType.Episode.ToUpper();
+                }
+               
+                episodeType.FileType = Path.GetExtension(episodeType.FileName);
+
+                episodeType.IsSelected = true;
+
+                newList.Add(episodeType);
+            }
+
+            return newList;
         }
 
         public Dictionary<string, string> GetMappingValues()
