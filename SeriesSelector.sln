@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3232AF87-E92
 		lib\FolderPickerLib.dll = lib\FolderPickerLib.dll
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFSpark", "WPFSpark\WPFSpark.csproj", "{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,16 +28,6 @@ Global
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|Mixed Platforms.Build.0 = Release|x86
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|x86.ActiveCfg = Release|x86
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|x86.Build.0 = Release|x86
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

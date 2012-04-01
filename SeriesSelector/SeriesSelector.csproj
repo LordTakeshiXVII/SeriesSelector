@@ -221,12 +221,6 @@
     <Resource Include="Images\VideoThumb.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WPFSpark\WPFSpark.csproj">
-      <Project>{98BE1309-CEB4-45EE-B4AD-28BAF0570FAB}</Project>
-      <Name>WPFSpark</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Check.png" />
   </ItemGroup>
   <ItemGroup>
