@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -184,6 +187,39 @@ namespace SeriesSelector.ViewModels
             }
         }
 
+        private int _progressBarMax = 1;
+        public int ProgressBarMax
+        {
+            get { return _progressBarMax; }
+            set
+            {
+                _progressBarMax = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ProgressBarMax"));
+            }
+        }
+
+        private int _progressBarValue = 0;
+        public int ProgressBarValue
+        {
+            get { return _progressBarValue; }
+            set
+            {
+                _progressBarValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ProgressBarValue"));
+            }
+        }
+
+        private Visibility _progressBarVisibility = Visibility.Collapsed;
+        public Visibility ProgressBarVisibility
+        {
+            get { return _progressBarVisibility; }
+            set
+            {
+                _progressBarVisibility = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ProgressBarVisibility"));
+            }
+        }
+
         public ICommand MoveAllFiles { get; set; }
         private void ExecuteMoveAllFiles(object obj)
         {
@@ -196,13 +232,28 @@ namespace SeriesSelector.ViewModels
                                  if (NewFileList == null)
                                      return;
 
+                                 ProgressBarMax = NewFileList.Count;
+                                 ProgressBarValue = 0;
+                                 var counter = 0;
+                                 ProgressBarVisibility = Visibility.Visible;
+
                                  foreach (EpisodeType episodeType in NewFileList)
                                  {
+                                     
+                                     counter++;
+                                     ProgressBarValue = counter;
+                                     
                                      if (!episodeType.IsSelected)
                                          continue;
 
+                                     episodeType.IsMoving = true;
+                                     Thread.Sleep(1000);
+
                                      if(episodeType.NewName == null)
+                                     {
+                                         episodeType.IsMoving = false;
                                          continue;
+                                     }
 
                                      var oldPath = episodeType.FullPath;
                                      var newPath = Path.Combine(_destinationPath, episodeType.SeriesName,
@@ -212,24 +263,58 @@ namespace SeriesSelector.ViewModels
                                      if (Directory.Exists(newPath))
                                      {
                                          newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                                         if (!File.Exists(newPath))
-                                             File.Move(oldPath, newPath);
+                                         if (File.Exists(newPath))
+                                         {
+                                             episodeType.IsAlreadyExisting = true;
+                                             episodeType.IsMoving = false;
+                                         }
+                                             
+                                         else
+                                             try
+                                             {
+                                                 File.Move(oldPath, newPath);
+                                                 episodeType.IsMoving = false;
+                                                 episodeType.IsMoved = true;
+                                             }
+                                             catch (Exception exception)
+                                             {
+                                                 MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK,
+                                                                 MessageBoxImage.Error);
+                                             }
                                      }
                                      else
                                      {
                                          Directory.CreateDirectory(newPath);
                                          newPath = Path.Combine(newPath, episodeType.NewName + episodeType.FileType);
-                                         File.Move(oldPath, newPath);
+                                         try
+                                         {
+                                             File.Move(oldPath, newPath);
+                                             episodeType.IsMoving = false;
+                                             episodeType.IsMoved = true;
+                                         }
+                                         catch (Exception exception)
+                                         {
+                                             MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK,
+                                                             MessageBoxImage.Error);
+                                         }
+                                         
                                      }
-                                     UpdateFileLists();
+                                     
+                                     
+                                     
+                                     //UpdateFileLists();
                                  }
                              };
 
             bg.RunWorkerCompleted += (sender, e) =>
                                          {
                                              PropertyChanged(this, new PropertyChangedEventArgs("SourcePath"));
-                                             UpdateFileLists();
+                                             //UpdateFileLists();
                                              Mouse.OverrideCursor = null;
+                                             MessageBox.Show("All files have been moved.", "Complete",
+                                                             MessageBoxButton.OK, MessageBoxImage.Information);
+                                             ProgressBarVisibility = Visibility.Collapsed;
+                                             UpdateFileLists();
                                          };
 
             bg.RunWorkerAsync();

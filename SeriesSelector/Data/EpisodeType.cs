@@ -13,6 +13,7 @@ namespace SeriesSelector.Data
         public string FullPath { get; set; }
         public string NewName { get; set; }
         public string SeriesName { get; set; }
+        
         private bool _isSelected;
         public bool IsSelected
         {
@@ -25,6 +26,42 @@ namespace SeriesSelector.Data
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs("IsSelected"));
                 }
 
+            }
+        }
+
+        private bool _isMoving;
+        public bool IsMoving
+        {
+            get { return _isMoving; }
+            set
+            {
+                _isMoving = value;
+                if (PropertyChanged != null)
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("IsMoving"));
+            }
+        }
+
+        private bool _isMoved;
+        public bool IsMoved
+        {
+            get { return _isMoved; }
+            set
+            {
+                _isMoved = value;
+                if (PropertyChanged != null)
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("IsMoved"));
+            }
+        }
+
+        private bool _isAlreadyExisting;
+        public bool IsAlreadyExisting
+        {
+            get { return _isAlreadyExisting; }
+            set
+            {
+                _isAlreadyExisting = value;
+                if (PropertyChanged != null)
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("IsAlreadyExisting"));
             }
         }
 

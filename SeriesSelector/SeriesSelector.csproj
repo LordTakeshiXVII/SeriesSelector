@@ -66,6 +66,10 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FolderPickerLib, Version=1.0.4099.42616, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\lib\FolderPickerLib.dll</HintPath>
@@ -108,6 +112,7 @@
     <Compile Include="Data\ThreeDigitsEpisodeChecker.cs" />
     <Compile Include="Frame\AdhocCommand.cs" />
     <Compile Include="Frame\Constants.cs" />
+    <Compile Include="Frame\InvertedBoolToVisibilityConverter.cs" />
     <Compile Include="SeriesManagement\SeriesView.xaml.cs">
       <DependentUpon>SeriesView.xaml</DependentUpon>
     </Compile>
@@ -124,6 +129,10 @@
     <Page Include="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DashBoardContent.xaml">
       <SubType>Designer</SubType>
@@ -142,6 +151,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Frame\BootStrapper.cs" />
+    <Compile Include="UserControls\CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DashBoardContent.xaml.cs">
       <DependentUpon>DashBoardContent.xaml</DependentUpon>
     </Compile>
@@ -241,6 +253,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Link.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SerSelIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

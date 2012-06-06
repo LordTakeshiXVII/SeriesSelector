@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3232AF87-E92
 		lib\FolderPickerLib.dll = lib\FolderPickerLib.dll
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SeriesSelector.Setup", "SeriesSelector.Setup\SeriesSelector.Setup.vdproj", "{DDEB510A-9B30-434C-B299-083E77C1CA91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,12 @@ Global
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|Mixed Platforms.Build.0 = Release|x86
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|x86.ActiveCfg = Release|x86
 		{16BB9BAA-AC92-4512-8EA5-AA51F5CF7B69}.Release|x86.Build.0 = Release|x86
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Debug|Any CPU.ActiveCfg = Debug
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Debug|x86.ActiveCfg = Debug
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Release|Any CPU.ActiveCfg = Release
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Release|Mixed Platforms.ActiveCfg = Release
+		{DDEB510A-9B30-434C-B299-083E77C1CA91}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
