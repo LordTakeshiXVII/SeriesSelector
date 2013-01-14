@@ -293,7 +293,7 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             Command="{Binding SearchMapping}">
-                        <Image Source="../Images/Delete.png" />
+                        <Image Source="../Images/Search.png" />
                         <Button.ToolTip>
                             <ToolTip Content="Search Mapping" />
                         </Button.ToolTip>
