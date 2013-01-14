@@ -135,9 +135,9 @@
                                    FontSize="24"
                                    FontWeight="Bold"
                                    Foreground="White"
-                                   Text="{Binding NewName,
-                                                  UpdateSourceTrigger=PropertyChanged,
-                                                  Mode=TwoWay}"
+                                   Text="{Binding Path=NewName,
+                                                  Mode=TwoWay,
+                                                  UpdateSourceTrigger=PropertyChanged}"
                                    TextAlignment="Center"
                                    TextWrapping="WrapWithOverflow">
                             <TextBlock.Effect>

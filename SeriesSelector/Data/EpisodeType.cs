@@ -11,7 +11,6 @@ namespace SeriesSelector.Data
         public string FileSize { get; set; }
         public string FileType { get; set; }
         public string FullPath { get; set; }
-        public string NewName { get; set; }
         public string SeriesName { get; set; }
         
         private bool _isSelected;
@@ -62,6 +61,18 @@ namespace SeriesSelector.Data
                 _isAlreadyExisting = value;
                 if (PropertyChanged != null)
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs("IsAlreadyExisting"));
+            }
+        }
+
+        private string _newName;
+        public string NewName
+        {
+            get { return _newName; }
+            set
+            {
+                _newName = value;
+                if (PropertyChanged != null)
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("NewName"));
             }
         }
 
