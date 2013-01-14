@@ -3,10 +3,19 @@
   <Profiles />
   <Settings>
     <Setting Name="SourcePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">E:\My Files\Downloads\Newshosting</Value>
+      <Value Profile="(Default)">C:\users\abo\desktop\source</Value>
     </Setting>
-    <Setting Name="DestinationPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">L:\External Videos\Serien</Value>
+    <Setting Name="DestinationSeriesPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\users\abo\desktop\destination</Value>
+    </Setting>
+    <Setting Name="FileTypes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mkv|avi|mp4</Value>
+    </Setting>
+    <Setting Name="CleanList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">720p|1080i|1080p|x264|DSR|HR-HDTV|HR.HDTV|HDTV|DVDMux|BluRay|BRay|Rip|DVDRip|BluRayRip|Blu|Ray|Xvid</Value>
+    </Setting>
+    <Setting Name="DestinationMoviesPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\users\abo\desktop\destination</Value>
     </Setting>
   </Settings>
 </SettingsFile>

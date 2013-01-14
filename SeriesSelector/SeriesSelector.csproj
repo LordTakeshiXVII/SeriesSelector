@@ -99,13 +99,14 @@
     </Compile>
     <Compile Include="Data\EpisodeService.cs" />
     <Compile Include="Data\EpisodeType.cs" />
-    <Compile Include="Data\FileTypeValue.cs" />
-    <Compile Include="Data\IEpisdoeService.cs" />
+    <Compile Include="Data\IEpisodeService.cs" />
     <Compile Include="Data\IEpisodeChecker.cs" />
     <Compile Include="Data\IMappingService.cs" />
+    <Compile Include="Data\IMovieService.cs" />
     <Compile Include="Data\ISeriesMatcher.cs" />
     <Compile Include="Data\MappingService.cs" />
     <Compile Include="Data\MappingValue.cs" />
+    <Compile Include="Data\MovieService.cs" />
     <Compile Include="Data\NameMatcher.cs" />
     <Compile Include="Data\PatternMatcher.cs" />
     <Compile Include="Data\SimpleEpisodeChecker.cs" />
@@ -113,12 +114,19 @@
     <Compile Include="Frame\AdhocCommand.cs" />
     <Compile Include="Frame\Constants.cs" />
     <Compile Include="Frame\InvertedBoolToVisibilityConverter.cs" />
+    <Compile Include="MoviesManagement\MoviesView.xaml.cs">
+      <DependentUpon>MoviesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SeriesManagement\SeriesView.xaml.cs">
       <DependentUpon>SeriesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\IStartup.cs" />
     <Compile Include="SyncStartup.cs" />
     <Page Include="Dashboard\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MoviesManagement\MoviesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -161,6 +169,7 @@
       <DependentUpon>DashBoardHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\MoviesViewModel.cs" />
     <Compile Include="ViewModels\SeriesViewModel.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -189,7 +198,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Frame\Mappings.xsd">
       <SubType>Designer</SubType>
     </None>

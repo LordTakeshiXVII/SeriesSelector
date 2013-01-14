@@ -4,28 +4,25 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using SeriesSelector.Frame;
+using SeriesSelector.Properties;
 
 namespace SeriesSelector.Data
 {
-    [Export(typeof(IEpisdoeService))]
-    public class EpisodeService : IEpisdoeService
+    [Export(typeof(IEpisodeService))]
+    public class EpisodeService : IEpisodeService
     {
         public IList<EpisodeType> GetSourceEpisode(string sourcePath)
         {
-            var fileTypeValues = new List<FileTypeValue>
-                               {
-                                   new FileTypeValue("avi"),
-                                   new FileTypeValue("mkv"),
-                                   new FileTypeValue("mp4")
-                               };
+            var fileTypeValues = Settings.Default.FileTypes.Split('|');
 
             var fileList = new ArrayList();
 
             foreach (var fileTypeValue in fileTypeValues)
             {
-                var di = Directory.GetFiles(sourcePath, string.Format("*.{0}", fileTypeValue.Type),
+                var di = Directory.GetFiles(sourcePath, string.Format("*.{0}", fileTypeValue),
                                             SearchOption.AllDirectories);
 
                 fileList.AddRange(di);
@@ -49,7 +46,7 @@ namespace SeriesSelector.Data
 
                 foreach (var c in checker)
                 {
-                    result = c.CheckSeasonEpisode(fileName);
+                    result = c.CheckSeasonEpisode(CleanName(fileName));
                     if (result != null)
                         break;
                 }
@@ -142,6 +139,17 @@ namespace SeriesSelector.Data
             mappingTable.Columns.Add("OldName");
             mappingTable.Columns.Add("NewName");
             return mappingTable;
+        }
+
+        private string CleanName(string fileName)
+        {
+            var cleanedName = fileName;
+            var cleanlist = Settings.Default.CleanList.Split('|');
+            cleanedName = cleanlist.Aggregate(cleanedName.ToLower(), (current, word) => current.Replace(word.ToLower(), string.Empty));
+            cleanedName = cleanedName.Replace('.', ' ');
+            cleanedName = cleanedName.Insert(cleanedName.LastIndexOf(' '), ".").Remove(cleanedName.LastIndexOf(' '), 1);
+            cleanedName = cleanedName.Replace('_', ' ');
+            return cleanedName;
         }
     }
 }

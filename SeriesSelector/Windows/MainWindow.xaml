@@ -4,8 +4,7 @@
         xmlns:Dashboard="clr-namespace:SeriesSelector.Dashboard"
         xmlns:SeriesManagement="clr-namespace:SeriesSelector.SeriesManagement"
         xmlns:UserControls="clr-namespace:SeriesSelector.UserControls"
-        xmlns:ViewModels="clr-namespace:SeriesSelector.ViewModels"
-        Title="Series Selector"
+        xmlns:ViewModels="clr-namespace:SeriesSelector.ViewModels" xmlns:MoviesManagement="clr-namespace:SeriesSelector.MoviesManagement" Title="Series Selector"
         Loaded="WindowLoaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -14,6 +13,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type ViewModels:DashBoardViewModel}">
                 <Dashboard:DashboardView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModels:MoviesViewModel}">
+                <MoviesManagement:MoviesView />
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>

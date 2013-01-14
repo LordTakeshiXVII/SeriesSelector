@@ -28,8 +28,30 @@
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
-                        <Label Content="Unmoved Files" />
-                        <TextBlock Grid.Column="1" Text="{Binding UnmovedFiles}" />
+                        <Label Content="Unmoved Series" />
+                        <TextBlock Grid.Column="1" Text="{Binding UnmovedSeries}" />
+                    </Grid>
+                </Button>
+            </Border>
+            <Border Width="200"
+                    Height="300"
+                    Margin="20"
+                    Background="{StaticResource BG}"
+                    CornerRadius="6">
+                <Button HorizontalContentAlignment="Left"
+                        VerticalContentAlignment="Top"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding OpenMovies}"
+                        CommandParameter="Movies">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Unmoved Movies" />
+                        <TextBlock Grid.Column="1" Text="{Binding UnmovedMovies}" />
                     </Grid>
                 </Button>
             </Border>

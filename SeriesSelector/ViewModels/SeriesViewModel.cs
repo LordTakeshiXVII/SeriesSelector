@@ -25,7 +25,7 @@ namespace SeriesSelector.ViewModels
         public SeriesViewModel()
         {
             _sourcePath = Settings.Default.SourcePath;
-            _destinationPath = Settings.Default.DestinationPath;
+            _destinationPath = Settings.Default.DestinationSeriesPath;
 
             _currentMappings = new Dictionary<string, string>();
 
@@ -37,7 +37,7 @@ namespace SeriesSelector.ViewModels
 
         private void InitializeServices()
         {
-            _episodeService = BootStrapper.Resolve<IEpisdoeService>();
+            _episodeService = BootStrapper.Resolve<IEpisodeService>();
         }
 
         private void InitializeCommands()
@@ -65,8 +65,8 @@ namespace SeriesSelector.ViewModels
             
         }
 
-        private FileTypeValue _selectedFileType;
-        public FileTypeValue SelectedFileType
+        private string _selectedFileType;
+        public string SelectedFileType
         {
             get { return _selectedFileType; }
             set
@@ -77,7 +77,7 @@ namespace SeriesSelector.ViewModels
             }
         }
 
-        public ObservableCollection<FileTypeValue> FileTypes { get; set; }
+        public ObservableCollection<string> FileTypes { get; set; }
 
         private void ExecuteRemoveMapping(object obj)
         {
@@ -122,7 +122,7 @@ namespace SeriesSelector.ViewModels
             set { _newName = value; }
         }
 
-        private IEpisdoeService _episodeService;
+        private IEpisodeService _episodeService;
 
         private Dictionary<string, string> _currentMappings;
 

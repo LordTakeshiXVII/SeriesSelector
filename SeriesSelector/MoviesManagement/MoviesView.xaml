@@ -1,0 +1,355 @@
+﻿<UserControl x:Class="SeriesSelector.MoviesManagement.MoviesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Frame="clr-namespace:SeriesSelector.Frame"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:UserControls="clr-namespace:SeriesSelector.UserControls"
+             x:Name="MoviesUserControl"
+             Height="auto"
+             d:DesignHeight="600"
+             d:DesignWidth="1200"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisConv" />
+        <Frame:InvertedBoolToVisibilityConverter x:Key="invBoolToVisConv" />
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Button Margin="4"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding SelectAll}">
+                <Button.ToolTip>
+                    <ToolTip Content="Select all episodes" />
+                </Button.ToolTip>
+                <Image Source="../Images/check.png" />
+            </Button>
+
+            <Button Margin="4"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding UnselectAll}">
+                <Button.ToolTip>
+                    <ToolTip Content="Unselect all episodes" />
+                </Button.ToolTip>
+                <Image Source="../Images/uncheck.png" />
+            </Button>
+
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding MoveAllFiles}">
+                <Button.ToolTip>
+                    <ToolTip Content="Move selected movies" />
+                </Button.ToolTip>
+                <Image Source="../Images/Save.png" />
+            </Button>
+        </StackPanel>
+        <ListView x:Name="NewFileListView"
+                  Grid.Column="1"
+                  Margin="4"
+                  BorderBrush="Black"
+                  BorderThickness="0"
+                  ItemsSource="{Binding NewFileList,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  SelectedItem="{Binding SelectedFile,
+                                         Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="8" Visibility="{Binding IsMoved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource invBoolToVisConv}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="150" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label Content="Name:" />
+                                    <TextBox Name="NameBox"
+                                             Grid.Column="1"
+                                             MaxWidth="200"
+                                             Text="{Binding FileName}" />
+                                    <Label Grid.Row="1" Content="File Size:" />
+                                    <TextBox Name="FileSizeBox"
+                                             Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding FileSize}" />
+                                    <Label Grid.Row="2" Content="File Type:" />
+                                    <TextBox Name="FileTypeBox"
+                                             Grid.Row="2"
+                                             Grid.Column="1"
+                                             Text="{Binding FileType}" />
+                                    <Label Grid.Row="3"
+                                           HorizontalAlignment="Right"
+                                           Content="New file name:" />
+                                    <TextBox Grid.Row="3"
+                                             Grid.Column="1"
+                                             Text="{Binding NewName}" />
+                                </Grid>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Image Grid.Column="1"
+                               Width="150"
+                               Source="../Images/VideoThumb.png" />
+
+                        <UserControls:CircularProgressBar Grid.Column="1" Visibility="{Binding IsMoving, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConv}}" />
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="{Binding NewName,
+                                                  UpdateSourceTrigger=PropertyChanged,
+                                                  Mode=TwoWay}"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWithOverflow">
+                            <TextBlock.Effect>
+                                <DropShadowEffect />
+
+                            </TextBlock.Effect>
+                        </TextBlock>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Bottom"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="Red"
+                                   Text="File already exists!"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWithOverflow"
+                                   Visibility="{Binding IsAlreadyExisting,
+                                                        Mode=TwoWay,
+                                                        UpdateSourceTrigger=PropertyChanged,
+                                                        Converter={StaticResource boolToVisConv}}">
+
+                            <TextBlock.Effect>
+                                <DropShadowEffect />
+
+                            </TextBlock.Effect>
+                        </TextBlock>
+
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+
+
+                    <!--
+                        <wpfspark:FluidWrapPanel Margin="20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        ClipToBounds="True"
+                        DragOpacity="0.75"
+                        DragScale="1.9"
+                        IsComposing="True"
+                        ItemHeight="200"
+                        ItemWidth="170"
+                        Orientation="Horizontal">
+                        <wpfspark:FluidWrapPanel.ElementEasing>
+                        <BackEase Amplitude="0.35" EasingMode="EaseOut" />
+                        </wpfspark:FluidWrapPanel.ElementEasing>
+                        <wpfspark:FluidWrapPanel.DragEasing>
+                        <BackEase Amplitude="0.65" EasingMode="EaseOut" />
+                        </wpfspark:FluidWrapPanel.DragEasing>
+                        </wpfspark:FluidWrapPanel>
+                    -->
+
+
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListView>
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Text="Progress"
+                   Visibility="{Binding ProgressBarVisibility}" />
+
+        <ProgressBar Grid.Row="1"
+                     Grid.Column="1"
+                     Height="30"
+                     Maximum="{Binding ProgressBarMax}"
+                     Visibility="{Binding ProgressBarVisibility}"
+                     Value="{Binding ProgressBarValue}" />
+
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label HorizontalContentAlignment="Right" Content="Name:" />
+                    <TextBox Name="NameBox"
+                             Grid.Column="1"
+                             Text="{Binding Name}" />
+                    <Label Grid.Row="1"
+                           HorizontalContentAlignment="Right"
+                           Content="File Size:" />
+                    <TextBox Name="FileSizeBox"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Text="{Binding FileSize}" />
+                    <Label Grid.Row="2"
+                           HorizontalContentAlignment="Right"
+                           Content="File Type:" />
+                    <TextBox Name="FileTypeBox"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding FileType}" />
+                    <Label Grid.Row="3"
+                           HorizontalAlignment="Right"
+                           Content="New file name:" />
+                    <TextBox Grid.Row="3"
+                             Grid.Column="1"
+                             Text="{Binding NewName}" />
+
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Column="1" Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <ListView ItemsSource="{Binding CurrentMappings}" SelectedItem="{Binding SelectedMapping, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBox Grid.Row="1" Text="{Binding MappingSearch}" />
+
+                <StackPanel Grid.Row="2"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+
+
+                    <Button Height="30"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding ApplyMapping}">
+                        <Image Source="../Images/Check.png" />
+                        <Button.ToolTip>
+                            <ToolTip Content="Apply Mapping" />
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Height="30"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding SearchMapping}">
+                        <Image Source="../Images/Delete.png" />
+                        <Button.ToolTip>
+                            <ToolTip Content="Search Mapping" />
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0"
+                       HorizontalContentAlignment="Right"
+                       Content="Source Path:" />
+                <TextBox Name="SourcePathTextBox"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         Text="{Binding SourcePath}" />
+                <Button Grid.Row="0"
+                        Grid.Column="2"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding SelectSourceFolder}">
+                    <Image Source="../Images/Folder.png" />
+                </Button>
+
+                <Label Grid.Row="1"
+                       HorizontalContentAlignment="Right"
+                       Content="Destination Path:" />
+                <TextBox Name="DestinationPathTextBox"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding DestinationPath}" />
+                <Button Grid.Row="1"
+                        Grid.Column="2"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding SelectDestinationFolder}">
+                    <Image Source="../Images/Folder.png" />
+                </Button>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+
+</UserControl>

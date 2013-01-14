@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace SeriesSelector.Data
 {
-    public interface IEpisdoeService
+    public interface IEpisodeService
     {
         IList<EpisodeType> GetSourceEpisode(string sourcePath);
         IList<EpisodeType> GetNewFileList(IList<EpisodeType> sourceFiles);

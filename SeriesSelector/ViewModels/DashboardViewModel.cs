@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
@@ -14,21 +15,34 @@ namespace SeriesSelector.ViewModels
         public DashBoardViewModel()
         {
             CurrentSeriesViewModel = (SeriesViewModel) BootStrapper.Resolve<object>("Series");
-            UnmovedFiles = CurrentSeriesViewModel.FileList.Count;
+            CurrentMoviesViewModel = (MoviesViewModel) BootStrapper.Resolve<object>("Movies");
+            UnmovedSeries = CurrentSeriesViewModel.FileList.Count;
+            UnmovedMovies = CurrentMoviesViewModel.FileList.Count;
             OpenSeries = new AdHocCommand(ExecuteOpenSeries);
+            OpenMovies = new AdHocCommand(ExecuteOpenMovies);
             NavigateToHome = new AdHocCommand(ExecuteNavigateToHome);
         }
 
         public SeriesViewModel CurrentSeriesViewModel { get; set; }
+        public MoviesViewModel CurrentMoviesViewModel { get; set; }
 
-        public int UnmovedFiles { get; set; }
+        public int UnmovedSeries { get; set; }
+        public int UnmovedMovies { get; set; }
 
         public ICommand OpenSeries { get; set; }
+        public ICommand OpenMovies { get; set; }
+
         public ICommand NavigateToHome { get; set; }
-        
+
         private void ExecuteOpenSeries(object obj)
         {
             CurrentViewModel = CurrentSeriesViewModel;
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CurrentViewModel"));
+        }
+
+        private void ExecuteOpenMovies(object obj)
+        {
+            CurrentViewModel = CurrentMoviesViewModel;
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CurrentViewModel"));
         }
 
